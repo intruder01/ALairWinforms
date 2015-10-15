@@ -351,7 +351,7 @@ namespace AdamsLair.WinForms.PropertyEditing
 		{
 			this.selectedObjects.Clear ();
 
-			//this.selectedObjects.AddRange(objEnum);
+			this.selectedObjects.AddRange(objEnum);
 
 			//replace with conditional Add()
 			foreach (object o in objEnum)
@@ -365,7 +365,7 @@ namespace AdamsLair.WinForms.PropertyEditing
 					foreach (PropertyInfo pi in properties)
 					{
 						bool ignore = false;
-						object[] attributes = pi.GetCustomAttributes ( true );
+						object[] attributes = pi.GetCustomAttributes ( false );
 						for (int i = 0; i < attributes.Length; i++)
 						{
 							if (attributes[i] is PropertyGridAttribute)
@@ -376,21 +376,28 @@ namespace AdamsLair.WinForms.PropertyEditing
 							}
 						}
 
-						if (!ignore)
+						try
 						{
-							var propertyValue = o.GetType ().GetProperty ( pi.Name ).GetValue ( o, null );
-							Type propertyType = o.GetType ().GetProperty ( pi.Name ).PropertyType;
-							object[] attributes2 = o.GetType ().GetProperty ( pi.Name ).GetCustomAttributes ( false );
-							object result = Convert.ChangeType ( propertyValue, propertyType );
+							if (!ignore)
+							{
+								var propertyValue = o.GetType ().GetProperty ( pi.Name ).GetValue ( o, null );
+								Type propertyType = o.GetType ().GetProperty ( pi.Name ).PropertyType;
+								object[] attributes2 = o.GetType ().GetProperty ( pi.Name ).GetCustomAttributes ( false );
+								object result = Convert.ChangeType ( propertyValue, propertyType );
 
-							if (propertyValue != null)
-								this.selectedObjects.Add ( result );
+								if (propertyValue != null)
+										this.selectedObjects.Add ( result );
+							}
 							else
 							{
 
 								int i = 1;
 							}
 
+						}
+						catch(Exception)
+						{
+							int i = 1;
 						}
 					}
 				
